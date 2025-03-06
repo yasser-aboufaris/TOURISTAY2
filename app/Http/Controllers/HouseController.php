@@ -47,11 +47,12 @@ public function editHouse(Request $request){
 }
 
 public function ownerController()
-{
-    // $userId = auth()->id(); // Get authenticated user ID
-    $userId=1;
+{   
+    $userId = auth()->id(); // Get authenticated user ID
+    // dd($userId);
+    
     $equipement = Equipement::all();
-    $houses = House::where('id', $userId)->get(); // Filter houses by user ID
+    $houses = House::where('id_owner', $userId)->get(); // Filter houses by user ID
 
     return view('ownerHome', compact('houses', 'equipement'));
 }
@@ -92,11 +93,13 @@ public function store(Request $request)
     // Get the authenticated user's ID
     $idOwner = auth()->user()->id;
 
+
     // Handle image upload
     $imagePath = null;
     if ($request->hasFile('image')) {
         $imagePath = $request->file('image')->store('houses', 'public');
     }
+    // dd($request);
 
     try {
         // Create the house
@@ -107,23 +110,24 @@ public function store(Request $request)
             'description'     => $request->description,
             'price'           => $request->price,
             'image'           => $imagePath,
-            'start_contract'  => $request->start_contract,
-            'end_contract'    => $request->end_contract
+            'contract_start'  => $request->start_contract,
+            'contract_end'    => $request->end_contract
         ]);
+        // dd($validatedData);
+        
 
         // Attach equipements if provided
         if ($request->has('equipements') && is_array($request->equipements)) {
-            $house->equipements()->attach($request->equipements);
+            $house->equipementes()->attach($request->equipements);
         }
 
         // Redirect with success message
         return redirect()->back()->with('success', 'House created successfully');
     } catch (\Exception $e) {
-        // Log the error
         \Log::error('House creation error: ' . $e->getMessage());
-        
+        dd($e->getMessage());
         // Redirect back with error message
-        return redirect()->back()->with('error', 'Failed to create house')->withInput();
+        // return redirect()->back()->with('error', 'Failed to create house')->withInput();
     }
 }
 
@@ -131,20 +135,18 @@ public function store(Request $request)
 
 
 
-    public function base(){
-        $x = ''; 
-        
+public function base() {
+    $houses = House::with('equipementes')->get();
+    return view('bysearch', compact('houses'));
+}
 
-    $houses = House::with('equipement')
-    ->where('title', 'ILIKE', "%{$x}%")
-    ->orWhereRelation('equipement', 'name', 'ILIKE', "%{$x}%")
-    ->get();
-    return view('bysearch',compact('houses'));
-    }
 
-    public function find($id){
-        $house=House::find($id);
+    public function find($id) {
+        $house = House::with('equipementes','category')->find($id);
+        // dd($house);
+        return  view('houseBoocking' , compact('house'));
     }
+    
     
     public function addToFavorits($id){
         $user = Auth::user();
@@ -162,9 +164,9 @@ public function store(Request $request)
 public function search(Request $request) { 
     $x = $request->input('search'); 
     
-    $houses = House::with('equipement')
+    $houses = House::with('equipementes')
         ->where('title', 'ILIKE', "%{$x}%")
-        ->orWhereRelation('equipement', 'name', 'ILIKE', "%{$x}%")
+        ->orWhereRelation('equipementes', 'name', 'ILIKE', "%{$x}%")
         ->get();
 
     return view('bysearch', compact('houses'));

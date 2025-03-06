@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HouseController;
+use App\Http\Controllers\ReservationController;
 use App\Http\Model\Category;
 use App\Model\User;
 /*
@@ -42,6 +43,10 @@ Route::get('housesAll',[HouseController::class, 'ownerController']);
 Route::post('house/edit',[HouseController::class, 'editHouse']);
 Route::post('test/favorite/add/{id}',[HouseController::class, 'addToFavorits']);
 Route::get('/admine' , [HouseController::class, 'dashboardAdmine']);
+Route::post('house/checkAvailability/{id}',[ReservationController::class, 'checkAvailability']);
+Route::post('house/reserve/{id}',[ReservationController::class, 'takeReservations']);
+
+
 
 Route::get('/te', function() {
     return view('houseBoocking');
