@@ -3,51 +3,31 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 class ReservationConfirmed extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $reservation;
+
     /**
      * Create a new message instance.
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
-     * Get the message envelope.
-     */
-    public function envelope(): Envelope
-    {
-        return new Envelope(
-            subject: 'Reservation Confirmed',
-        );
-    }
-
-    /**
-     * Get the message content definition.
-     */
-    public function content(): Content
-    {
-        return new Content(
-            view: 'view.name',
-        );
-    }
-
-    /**
-     * Get the attachments for the message.
      *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+     * @param $reservation
      */
-    public function attachments(): array
+    public function __construct($reservation)
     {
-        return [];
+        $this->reservation = $reservation;
+    }
+
+    /**
+     * Build the message.
+     */
+    public function build()
+    {
+        return $this->subject('Reservation Confirmed')
+                    ->text('emails.reservation-confirmed-raw'); // Use a plain text email view
     }
 }

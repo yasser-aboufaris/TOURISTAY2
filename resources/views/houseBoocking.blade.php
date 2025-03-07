@@ -71,37 +71,86 @@
                 <div class="bg-white rounded-lg shadow-md p-6 border-t-4 border-primary">
                     <h2 class="text-2xl font-bold text-primary mb-6">Check Availability</h2>
                     <form action="{{ !isset($availability) ? 'checkAvailability/' . $house->id : '/house/reserve/' . $house->id }}" method="POST" class="space-y-4">
+    @csrf
+    <div class="grid md:grid-cols-2 gap-4">
+        <div>
+            <label for="start_date" class="block text-gray-700 font-semibold mb-2">Check-in Date</label>
+            <input 
+                type="date" 
+                id="start_date" 
+                name="start_date" 
+                required 
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+        </div>
+        <div>
+            <label for="end_date" class="block text-gray-700 font-semibold mb-2">Check-out Date</label>
+            <input 
+                type="date" 
+                id="end_date" 
+                name="end_date" 
+                required 
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+        </div>
+    </div>
 
-                        @csrf
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <div>
-                                <label for="start_date" class="block text-gray-700 font-semibold mb-2">Check-in Date</label>
-                                <input 
-                                    type="date" 
-                                    id="start_date" 
-                                    name="start_date" 
-                                    required 
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                                >
-                            </div>
-                            <div>
-                                <label for="end_date" class="block text-gray-700 font-semibold mb-2">Check-out Date</label>
-                                <input 
-                                    type="date" 
-                                    id="end_date" 
-                                    name="end_date" 
-                                    required 
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                                >
-                            </div>
-                        </div>
-                        <button 
-                            type="submit" 
-                            class="w-full bg-primary text-white py-3 rounded-md hover:bg-opacity-90 transition-colors font-semibold"
-                        >
-                            {{ isset($availability) ? 'Reserve' : 'Check Availability' }}
-                        </button>
-                    </form>
+    @if(isset($availability))
+        <!-- Stripe Payment Fields -->
+        <div>
+            <label for="card_name" class="block text-gray-700 font-semibold mb-2">Name on Card</label>
+            <input 
+                type="text" 
+                id="card_name" 
+                name="card_name" 
+                required 
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+        </div>
+
+        <div>
+            <label for="card_number" class="block text-gray-700 font-semibold mb-2">Card Number</label>
+            <input 
+                type="text" 
+                id="card_number" 
+                name="card_number" 
+                required 
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+            <div>
+                <label for="expiry_date" class="block text-gray-700 font-semibold mb-2">Expiration Date (MM/YY)</label>
+                <input 
+                    type="text" 
+                    id="expiry_date" 
+                    name="expiry_date" 
+                    required 
+                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+            </div>
+            <div>
+                <label for="cvv" class="block text-gray-700 font-semibold mb-2">CVV</label>
+                <input 
+                    type="text" 
+                    id="cvv" 
+                    name="cvv" 
+                    required 
+                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+            </div>
+        </div>
+    @endif
+
+    <button 
+        type="submit" 
+        class="w-full bg-primary text-white py-3 rounded-md hover:bg-opacity-90 transition-colors font-semibold"
+    >
+        {{ isset($availability) ? 'Reserve' : 'Check Availability' }}
+    </button>
+</form>
+
                 </div>
             </div>
 

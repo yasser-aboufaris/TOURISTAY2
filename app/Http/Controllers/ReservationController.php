@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 use App\Models\Reservation;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ReservationConfirmed;
 
 use Illuminate\Http\Request;
 
@@ -37,6 +39,7 @@ class ReservationController extends Controller
             'start_date' => $startDate,
             'end_date' => $endDate,
         ]);
+        Mail::to(auth()->user()->email)->send(new ReservationConfirmed($reservation));
     
         return redirect()->back()->with([
             'success' => 'Reservation successfully created.',
